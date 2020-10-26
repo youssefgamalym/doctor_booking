@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "463265460482",
+    "firebase_url": "https://doctor-booking-f593d.firebaseio.com",
+    "project_id": "doctor-booking-f593d",
+    "storage_bucket": "doctor-booking-f593d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463265460482:android:04ef1fad19646ed5f4121b",
+        "android_client_info": {
+          "package_name": "com.example.doctor_booking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463265460482-njdt8injft8ul44732fo2cs2gas5rtr5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4dLSC4i-vRhkzmZ7TWOprAICHs4UfzJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "463265460482-njdt8injft8ul44732fo2cs2gas5rtr5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
