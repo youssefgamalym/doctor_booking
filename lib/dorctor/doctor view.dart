@@ -37,9 +37,31 @@ class _DoctorViewState extends State<DoctorView> {
     });
   }
 
+  _showSnackBar() {
+    var snackbar = SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            child: Text(
+              'Done',
+              style: simpleNo_Style(),
+            ),
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 4),
+      backgroundColor: Colors.deepOrange,
+    );
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Welcome Doctor',
@@ -184,7 +206,7 @@ class _DoctorViewState extends State<DoctorView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Status :',
+                    'Status :  ',
                     style: simpleTextStyle(),
                   ),
                   DropdownButton<String>(
@@ -208,16 +230,10 @@ class _DoctorViewState extends State<DoctorView> {
                 padding: const EdgeInsets.all(20.0),
                 child: FlatButton(
                     color: Colors.orange,
-                    child: Text(
-                      'refresh',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                    child: Text('Refresh', style: simpleNo_Style()),
+                    onPressed: _showSnackBar
+                    //  Navigator.pushNamed(context, 'doctor view');
                     ),
-                    onPressed: () {
-                      //  Navigator.pushNamed(context, 'doctor view');
-                    }),
               )
             ],
           )
