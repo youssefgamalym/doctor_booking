@@ -1,3 +1,4 @@
+import 'package:doctor_booking/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,7 @@ class _HomeState extends State<Home> {
                 color: Colors.orange,
                 child: Text(
                   'Enter as patient',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                  style: simpleNo_Style(),
                 ),
               )
             ],
@@ -51,10 +50,7 @@ class _HomeState extends State<Home> {
                   color: Colors.orange,
                   child: Text(
                     'Sign in  as Doctor',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: simpleNo_Style(),
                   ),
                 )
               ],
@@ -70,10 +66,7 @@ class _HomeState extends State<Home> {
                 color: Colors.orange,
                 child: Text(
                   'Create  account',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: simpleNo_Style(),
                 ),
               )
             ],

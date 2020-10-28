@@ -1,19 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-Widget appBarMain(BuildContext context, Title) {
+Widget appBarMain(BuildContext context, String Title) {
   return AppBar(
-    title: Text(Title),
-    elevation: 0.0,
-    centerTitle: false,
+    title: Text(Title, style: styleForAppBar()),
+    centerTitle: true,
+    backgroundColor: Colors.deepOrange,
   );
 }
 
-TextFormField forProfile(String content, String labeltext, Icon icon) {
+final CollectionReference doctor_profile_Collection =
+    FirebaseFirestore.instance.collection('doctor profile');
+callCollection() {
+  return doctor_profile_Collection;
+}
+
+setCallCollection() {}
+TextFormField forProfile(var onChanged, String labeltext, Icon icon) {
   return TextFormField(
-    onChanged: (vale) {
-      content = vale;
-    },
+    onChanged: onChanged,
     keyboardType: TextInputType.emailAddress,
     decoration: InputDecoration(
         icon: icon,
@@ -50,4 +56,14 @@ TextStyle simpleTextStyleDropdown() {
 TextStyle simpleNo_Style() {
   return TextStyle(
       color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold);
+}
+
+TextStyle styleForAppBar() {
+  return TextStyle(
+      color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold);
+}
+
+TextStyle styleForNormalText() {
+  return TextStyle(
+      color: Colors.deepOrange, fontSize: 20, fontWeight: FontWeight.bold);
 }

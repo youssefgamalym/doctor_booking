@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,8 @@ class _DoctorViewState extends State<DoctorView> {
   int currentPatientNo = 0;
   int pending = 0;
   String dropdownValue = 'Offline';
+  final CollectionReference doctor_profile_Collection =
+      FirebaseFirestore.instance.collection('doctor profile');
 
   IncreaseCurrentPatientNo() {
     setState(() {
@@ -63,9 +66,19 @@ class _DoctorViewState extends State<DoctorView> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(
-          'Welcome Doctor',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        title: Row(
+          children: [
+            Text(
+              'Welcome Doctor',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            FlatButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'doctor profile');
+                },
+                icon: Icon(Icons.person),
+                label: Text(''))
+          ],
         ),
         centerTitle: true,
         backgroundColor: Colors.deepOrange,
@@ -231,7 +244,23 @@ class _DoctorViewState extends State<DoctorView> {
                 child: FlatButton(
                     color: Colors.orange,
                     child: Text('Refresh', style: simpleNo_Style()),
-                    onPressed: _showSnackBar
+                    onPressed: () async {
+                      var doctorMap = {
+                        'currentPatientNo': currentPatientNo,
+                        'pending': pending,
+                        'dropdownValue': dropdownValue,
+                      };
+                      _showSnackBar();
+                      try {
+                        doctor_profile_Collection
+                            .add(doctorMap)
+                            .catchError((error) {
+                          print("Error: $error");
+                        });
+                      } catch (e) {
+                        print(e);
+                      }
+                    }
                     //  Navigator.pushNamed(context, 'doctor view');
                     ),
               )

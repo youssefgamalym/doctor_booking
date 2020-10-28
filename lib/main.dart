@@ -1,6 +1,8 @@
 import 'package:doctor_booking/home.dart';
 import 'package:doctor_booking/patient/patient%20select%20.dart';
 import 'package:doctor_booking/patient/patient%20view.dart';
+import 'package:doctor_booking/test.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'dorctor/doctor login.dart';
@@ -15,6 +17,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Firebase.initializeApp();
     return MaterialApp(
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,

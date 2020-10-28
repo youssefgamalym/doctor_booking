@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,9 @@ class DoctorLogin extends StatefulWidget {
 
 class _DoctorLoginState extends State<DoctorLogin> {
   String L_email, L_passord;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController _controller = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var sizeW = MediaQuery.of(context).size.width / 1.2;
@@ -57,12 +61,6 @@ class _DoctorLoginState extends State<DoctorLogin> {
                           filled: true,
                           //fillColor: Colors.white70,
                           labelText: 'your Email Address'),
-
-                      // validator: (String email) {
-                      //   if (email.isEmpty) {
-                      //     return ' Please Enter your Email';
-                      //   }
-                      // },
                     ),
                   ),
                 ),
@@ -120,8 +118,18 @@ class _DoctorLoginState extends State<DoctorLogin> {
                       color: Colors.black,
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'doctor view');
+                  onPressed: () async {
+                    try {
+                      final User = await _auth.signInWithEmailAndPassword(
+                          email: L_email, password: L_passord);
+
+                      if (User != null) {
+                        Navigator.pushNamed(context, 'doctor view');
+                        _controller.clear();
+                      }
+                    } catch (e) {
+                      print(e);
+                    }
                   }),
             )
           ],

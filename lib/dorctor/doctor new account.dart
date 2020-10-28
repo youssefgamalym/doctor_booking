@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../widgets.dart';
 
 class CareatNewAccount extends StatefulWidget {
   @override
@@ -7,20 +10,37 @@ class CareatNewAccount extends StatefulWidget {
 }
 
 class _CareatNewAccountState extends State<CareatNewAccount> {
+  _showSnackBarForP() {
+    var snackbar = SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            child: Text(
+              'unidentical',
+              style: simpleNo_Style(),
+            ),
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 4),
+      backgroundColor: Colors.deepOrange,
+    );
+    _scaffoldKeyForP.currentState.showSnackBar(snackbar);
+  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKeyForP = GlobalKey<ScaffoldState>();
+  // ignore: non_constant_identifier_names
   String C_Email, C_Password, C_RPassword, C_name;
+  TextEditingController _controller = new TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     var sizeW = MediaQuery.of(context).size.width / 1.5;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Sign up',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange,
-      ),
+      key: _scaffoldKeyForP,
+      appBar: appBarMain(context, 'Sign up'),
       body: ListView(
         children: [
           Column(
@@ -199,8 +219,22 @@ class _CareatNewAccountState extends State<CareatNewAccount> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   RaisedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'doctor profile');
+                    onPressed: () async {
+                      if (C_Password == C_RPassword) {
+                        try {
+                          final User = await _auth
+                              .createUserWithEmailAndPassword(
+                                  email: C_Email, password: C_Password)
+                              .then((username) {
+                            username.user.updateProfile(displayName: C_name);
+                            Navigator.pushNamed(context, 'doctor profile');
+                            _controller.clear();
+                          });
+                        } catch (e) {
+                          print(e);
+                        }
+                      } else
+                        _showSnackBarForP();
                     },
                     color: Colors.orange,
                     child: Text(
@@ -220,24 +254,3 @@ class _CareatNewAccountState extends State<CareatNewAccount> {
     );
   }
 }
-//{
-// Row(
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               crossAxisAlignment: CrossAxisAlignment.end,
-//               children: [
-//                 RaisedButton(
-//                   onPressed: () {
-//                     Navigator.pushNamed(context, 'doctor profile');
-//                   },
-//                   color: Colors.blueAccent,
-//                   child: Text(
-//                     'Next',
-//                     style: TextStyle(
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.black,
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             )
-// }

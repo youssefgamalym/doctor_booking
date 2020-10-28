@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,12 @@ class _DoctorProfileState extends State<DoctorProfile> {
       timesStart,
       timesend,
       Phone_Number;
+  final CollectionReference doctor_profile_Collection =
+      FirebaseFirestore.instance.collection('doctor profile');
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // ignore: non_constant_identifier_names
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,8 +44,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   children: [
                     SizedBox(
                       width: 165,
-                      child: forProfile(
-                          firstName,
+                      child: forProfile((value) {
+                        firstName = value;
+                      },
                           'first name',
                           Icon(
                             Icons.person_add_alt_1_rounded,
@@ -49,8 +58,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     ),
                     SizedBox(
                       width: 165,
-                      child: forProfile(
-                          lastName,
+                      child: forProfile((value) {
+                        lastName = value;
+                      },
                           'last name',
                           Icon(
                             Icons.person_add_alt_1_rounded,
@@ -66,8 +76,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   children: [
                     SizedBox(
                       width: 300,
-                      child: forProfile(
-                          Phone_Number,
+                      child: forProfile((value) {
+                        Phone_Number = value;
+                      },
                           'Phone Number',
                           Icon(
                             Icons.phone,
@@ -83,8 +94,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   children: [
                     SizedBox(
                       width: 300,
-                      child: forProfile(
-                          Specialization,
+                      child: forProfile((value) {
+                        Specialization = value;
+                      },
                           'Specialization',
                           Icon(
                             Icons.account_balance_outlined,
@@ -115,8 +127,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   children: [
                     SizedBox(
                       width: 100,
-                      child: forProfile(
-                          timesStart,
+                      child: forProfile((value) {
+                        timesStart = value;
+                      },
                           'from',
                           Icon(
                             Icons.access_time,
@@ -128,8 +141,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     ),
                     SizedBox(
                       width: 100,
-                      child: forProfile(
-                          timesend,
+                      child: forProfile((value) {
+                        timesend = value;
+                      },
                           'to',
                           Icon(
                             Icons.access_time,
@@ -145,7 +159,19 @@ class _DoctorProfileState extends State<DoctorProfile> {
                 child: Text('Add Location'),
               ),
               RaisedButton(
-                onPressed: null,
+                onPressed: () {
+                  var profile = {
+                    'First Name': firstName,
+                    'Last Name': lastName,
+                    'Specialization': Specialization,
+                    'Time Start': timesStart,
+                    'Time End': timesend,
+                    'Phone Number': Phone_Number,
+                  };
+                  doctor_profile_Collection.add(profile).catchError((error) {
+                    print("Error: $error");
+                  });
+                },
                 color: Colors.orange,
                 child: Text('Save'),
               ),
