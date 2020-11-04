@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+
+import 'methods.dart';
 
 Widget appBarMain(BuildContext context, String Title) {
   return AppBar(
@@ -10,17 +14,11 @@ Widget appBarMain(BuildContext context, String Title) {
   );
 }
 
-final CollectionReference doctor_profile_Collection =
-    FirebaseFirestore.instance.collection('doctor profile');
-callCollection() {
-  return doctor_profile_Collection;
-}
-
-setCallCollection() {}
-TextFormField forProfile(var onChanged, String labeltext, Icon icon) {
+TextFormField forProfile(
+    var onChanged, String labeltext, Icon icon, TextInputType kind) {
   return TextFormField(
     onChanged: onChanged,
-    keyboardType: TextInputType.emailAddress,
+    keyboardType: kind,
     decoration: InputDecoration(
         icon: icon,
         enabledBorder: OutlineInputBorder(
@@ -41,29 +39,4 @@ TextFormField forProfile(var onChanged, String labeltext, Icon icon) {
     //   }
     // },
   );
-}
-
-TextStyle simpleTextStyle() {
-  return TextStyle(
-      color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold);
-}
-
-TextStyle simpleTextStyleDropdown() {
-  return TextStyle(
-      color: Colors.deepOrange, fontSize: 20, fontWeight: FontWeight.bold);
-}
-
-TextStyle simpleNo_Style() {
-  return TextStyle(
-      color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold);
-}
-
-TextStyle styleForAppBar() {
-  return TextStyle(
-      color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold);
-}
-
-TextStyle styleForNormalText() {
-  return TextStyle(
-      color: Colors.deepOrange, fontSize: 20, fontWeight: FontWeight.bold);
 }

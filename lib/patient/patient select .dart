@@ -1,18 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctor_booking/patient/patient%20enter%20id.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../methods.dart';
 import '../widgets.dart';
 
 class PatientSelect extends StatefulWidget {
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-
   @override
   _PatientSelectState createState() => _PatientSelectState();
 }
 
 class _PatientSelectState extends State<PatientSelect> {
-  final CollectionReference doctor_profile_Collection =
+  final CollectionReference patient_updates =
+      FirebaseFirestore.instance.collection('patient Updates');
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final CollectionReference doctorProfileCollection =
       FirebaseFirestore.instance.collection('doctor profile');
   @override
   Widget build(BuildContext context) {
@@ -21,26 +26,45 @@ class _PatientSelectState extends State<PatientSelect> {
       body: Column(
         children: [
           StreamBuilder(
-              stream: doctor_profile_Collection.snapshots(),
+              stream: doctorProfileCollection.snapshots(),
               builder: (context, snapShot) {
-                // if (snapShot.data == null) return CircularProgressIndicator();
+                if (snapShot.data == null) return CircularProgressIndicator();
                 return Expanded(
                   child: ListView(
                     children: snapShot.data.docs.map<Widget>((document) {
                       String doctorName = document.data()['First Name'];
                       String doctorNameLast = document.data()['Last Name'];
                       String specialization = document.data()['Specialization'];
-
-                      print("map: " + document.data().toString());
+                      int doctorcode = document.data()['Doctor Id'];
+                      print(
+                          "from patient select(screen)=> Doctor code: $doctorcode");
+                      String doctorId = document.documentID;
+                      print('from patient select(screen)=> Id: $doctorId');
                       return Padding(
                         padding:
                             const EdgeInsets.only(right: 10, left: 10, top: 20),
                         child: Card(
                           color: Colors.orange,
                           child: ListTile(
+                              isThreeLine: true,
+                              focusColor: Colors.deepOrange,
                               tileColor: Colors.orange,
                               onTap: () {
-                                Navigator.pushNamed(context, 'patient view');
+                                // get the selected doctor id
+                                // int doctorId = document(_auth.currentUser.uid)
+                                //     .data()['Doctor Id'];
+                                // int doctorcode = document.data()['Doctor Id'];
+                                print(
+                                    "from Patient select (screen) Doctor Id: $doctorcode");
+                                print('from Patient select (screen) on tap');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PatientEnterId(
+                                            doctorcode.toString(),
+                                            doctorId.toString())));
+                                // Navigator.pushNamed(
+                                //     context, 'patient enter id');
                               },
                               trailing: Icon(Icons.person_search),
                               title: Text(
@@ -48,17 +72,11 @@ class _PatientSelectState extends State<PatientSelect> {
                                     doctorName +
                                     ' ' +
                                     doctorNameLast),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                    color: Colors.black),
+                                style: styleForPatientSelect(),
                               ),
                               subtitle: Text(
                                 ('Specialization : ' + specialization),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black),
+                                style: styleForPatientSelect(),
                               )),
                         ),
                       );

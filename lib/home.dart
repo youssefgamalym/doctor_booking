@@ -1,6 +1,9 @@
+import 'package:doctor_booking/main.dart';
 import 'package:doctor_booking/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'main.dart';
+import 'methods.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,14 +14,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Welcome',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange,
-      ),
+      appBar: appBarMain(context, 'Welcome'),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,7 +24,7 @@ class _HomeState extends State<Home> {
             children: [
               RaisedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, 'patient select');
+                  Navigator.pushNamed(context, MyApp.PATENT_LOGIN);
                 },
                 color: Colors.orange,
                 child: Text(
@@ -45,7 +41,7 @@ class _HomeState extends State<Home> {
               children: [
                 RaisedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'doctor login');
+                    Navigator.pushNamed(context, MyApp.DOCTOR_LOGIN);
                   },
                   color: Colors.orange,
                   child: Text(
@@ -61,14 +57,19 @@ class _HomeState extends State<Home> {
             children: [
               RaisedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, 'create account');
+                  Navigator.pushNamed(context, MyApp.DOCTOR_NEW_ACCOUNT);
                 },
                 color: Colors.orange,
                 child: Text(
                   'Create  account',
                   style: simpleNo_Style(),
                 ),
-              )
+              ),
+              OutlinedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'doctor login');
+                  },
+                  child: Text('forget Password?'))
             ],
           ),
         ],

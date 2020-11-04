@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+import '../methods.dart';
 import '../widgets.dart';
 
 class CareatNewAccount extends StatefulWidget {
@@ -34,6 +37,13 @@ class _CareatNewAccountState extends State<CareatNewAccount> {
   String C_Email, C_Password, C_RPassword, C_name;
   TextEditingController _controller = new TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  int currentPatientNo = 0;
+  int pending = 0;
+  String dropdownValue = 'Offline';
+
+  final CollectionReference patient_updates =
+      FirebaseFirestore.instance.collection('patient Updates');
 
   @override
   Widget build(BuildContext context) {
@@ -227,8 +237,11 @@ class _CareatNewAccountState extends State<CareatNewAccount> {
                                   email: C_Email, password: C_Password)
                               .then((username) {
                             username.user.updateProfile(displayName: C_name);
-                            Navigator.pushNamed(context, 'doctor profile');
-                            _controller.clear();
+                            getCurrentUserId();
+                            print(getCurrentUserId());
+
+                            Navigator.pushNamed(context, MyApp.DOCTOR_PROFILE);
+                            //  _controller.clear();
                           });
                         } catch (e) {
                           print(e);

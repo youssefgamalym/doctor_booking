@@ -2,21 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../methods.dart';
 import '../widgets.dart';
 
 class DoctorView extends StatefulWidget {
   @override
   _DoctorViewState createState() => _DoctorViewState();
+  static const String CURRENT_PATIENT_NO = 'currentPatientNo';
 }
 
 class _DoctorViewState extends State<DoctorView> {
   int currentPatientNo = 0;
   int pending = 0;
   String dropdownValue = 'Offline';
-  final CollectionReference doctor_profile_Collection =
-      FirebaseFirestore.instance.collection('doctor profile');
 
-  IncreaseCurrentPatientNo() {
+  final CollectionReference patient_updates =
+      FirebaseFirestore.instance.collection('patient Updates');
+
+  IncreaseCurrentPatientNocurrentPatientNo() {
     setState(() {
       currentPatientNo++;
     });
@@ -60,7 +63,6 @@ class _DoctorViewState extends State<DoctorView> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +139,7 @@ class _DoctorViewState extends State<DoctorView> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      IncreaseCurrentPatientNo();
+                      IncreaseCurrentPatientNocurrentPatientNo();
                     },
                     child: Image(
                       image: AssetImage('Images/icons/right_arrow.png'),
@@ -245,15 +247,24 @@ class _DoctorViewState extends State<DoctorView> {
                     color: Colors.orange,
                     child: Text('Refresh', style: simpleNo_Style()),
                     onPressed: () async {
-                      var doctorMap = {
-                        'currentPatientNo': currentPatientNo,
+                      var patientMap = {
+                        DoctorView.CURRENT_PATIENT_NO: currentPatientNo,
                         'pending': pending,
                         'dropdownValue': dropdownValue,
                       };
                       _showSnackBar();
                       try {
-                        doctor_profile_Collection
-                            .add(doctorMap)
+                        //   Firestore.instance.collection('test').doc(getUserId());
+                        // patient_updates
+                        //     .doc(getUserId())
+                        //     .update(patientMap)
+                        //     .then((value) => print("User Updated"))
+                        //     .catchError((error) =>
+                        //         print("Failed to update user: $error"));
+
+                        patient_updates
+                            .doc(getCurrentUserId())
+                            .set(patientMap)
                             .catchError((error) {
                           print("Error: $error");
                         });

@@ -1,38 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctor_booking/main.dart';
 import 'package:doctor_booking/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../main.dart';
 import '../methods.dart';
 
-class DoctorLogin extends StatefulWidget {
+class PatientLogin extends StatefulWidget {
   @override
-  _DoctorLoginState createState() => _DoctorLoginState();
+  _PatientLoginState createState() => _PatientLoginState();
 }
 
-final _formKey = GlobalKey<FormState>();
+final _formKeyP = GlobalKey<FormState>();
 
-class _DoctorLoginState extends State<DoctorLogin> {
-  String L_email, L_passord;
+class _PatientLoginState extends State<PatientLogin> {
+  String P_email, P_passord;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  TextEditingController _controller = new TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var sizeW = MediaQuery.of(context).size.width / 1.2;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Sign in',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange,
-      ),
+      appBar: appBarMain(context, 'login'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +34,7 @@ class _DoctorLoginState extends State<DoctorLogin> {
                     width: sizeW,
                     child: TextFormField(
                       onChanged: (vale) {
-                        L_email = vale;
+                        P_email = vale;
                       },
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
@@ -82,14 +70,14 @@ class _DoctorLoginState extends State<DoctorLogin> {
             Row(
               children: [
                 Form(
-                  key: _formKey,
+                  key: _formKeyP,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: SizedBox(
                       width: sizeW,
                       child: TextFormField(
                         onChanged: (vale) {
-                          L_passord = vale;
+                          P_passord = vale;
                         },
                         keyboardType: TextInputType.text,
                         obscureText: true,
@@ -143,13 +131,13 @@ class _DoctorLoginState extends State<DoctorLogin> {
                     // }
                     try {
                       final User = await _auth.signInWithEmailAndPassword(
-                          email: L_email, password: L_passord);
+                          email: P_email, password: P_passord);
 
                       if (User != null) {
-                        var Uid = getCurrentUserId();
-                        print(Uid);
-                        Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
-                        _controller.clear();
+                        var Pid = getCurrentUserId();
+                        print('from login(screen) $Pid');
+                        Navigator.pushNamed(context, MyApp.PATIENT_SELECT);
+                        //_controller.clear();
                       }
                     } catch (e) {
                       print(e);
