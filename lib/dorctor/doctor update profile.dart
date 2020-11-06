@@ -7,9 +7,9 @@ import '../main.dart';
 import '../methods.dart';
 import '../widgets.dart';
 
-class DoctorProfile extends StatefulWidget {
+class DoctorUpdateProfile extends StatefulWidget {
   @override
-  _DoctorProfileState createState() => _DoctorProfileState();
+  _DoctorUpdateProfileState createState() => _DoctorUpdateProfileState();
 }
 
 final _keyFirsName = GlobalKey<FormState>();
@@ -19,7 +19,7 @@ final _keyDoctorSpecialization = GlobalKey<FormState>();
 final _keyID = GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class _DoctorProfileState extends State<DoctorProfile> {
+class _DoctorUpdateProfileState extends State<DoctorUpdateProfile> {
   Future<Null> selectTimeFrom(BuildContext context) async {
     TimeOfDay selectTimeForm =
         await showTimePicker(context: context, initialTime: TimeOfDay.now());
@@ -61,7 +61,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          'Sign up',
+          'Profile',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
@@ -209,9 +209,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                               if (value.isEmpty) {
                                 return 'Please Enter your ID ';
                               }
-                              // if (value.length <= 4) {
-                              //   return 'Use 4 or more Numbers';
-                              // }
+                              if (value.length >= 4) {
+                                return 'Use 4 or more Numbers';
+                              }
                             }),
                       ),
                     ),
@@ -276,11 +276,11 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   ],
                 ),
               ),
-              // RaisedButton(
-              //   onPressed: null,
-              //   color: Colors.orange,
-              //   child: Text('Add Location'),
-              // ),
+              RaisedButton(
+                onPressed: null,
+                color: Colors.orange,
+                child: Text('Add Location'),
+              ),
               RaisedButton(
                 onPressed: () {
                   if (_keyFirsName.currentState.validate() &&
@@ -305,14 +305,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         .catchError((error) {
                       print("Error: $error");
                     });
-                    if (User != null) {
-                      Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
-                    }
-                    Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
                   }
                 },
                 color: Colors.orange,
-                child: Text('continue'),
+                child: Text('Save'),
               ),
             ],
           ),

@@ -13,13 +13,12 @@ class DoctorLogin extends StatefulWidget {
   _DoctorLoginState createState() => _DoctorLoginState();
 }
 
-final _formKey = GlobalKey<FormState>();
+final _KeyPassward = GlobalKey<FormState>();
+final _KeyEmail = GlobalKey<FormState>();
 
 class _DoctorLoginState extends State<DoctorLogin> {
-  String L_email, L_passord;
+  String doctorLoginEmail, doctorLoginPassword;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  TextEditingController _controller = new TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var sizeW = MediaQuery.of(context).size.width / 1.2;
@@ -34,129 +33,110 @@ class _DoctorLoginState extends State<DoctorLogin> {
         backgroundColor: Colors.deepOrange,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SizedBox(
-                    width: sizeW,
-                    child: TextFormField(
-                      onChanged: (vale) {
-                        L_email = vale;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.email,
-                            color: Colors.orange,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(
-                                color: Colors.orangeAccent, width: 3),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              borderSide: BorderSide(
-                                  color: Colors.orangeAccent, width: 3)),
-                          labelStyle: TextStyle(color: Colors.deepOrange),
-                          filled: true,
-                          //fillColor: Colors.white70,
-                          labelText: 'your Email Address'),
-                      validator: (email) {
-                        if (email.isEmpty) {
-                          return ' Please Enter your Email';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Padding(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: SizedBox(
-                      width: sizeW,
-                      child: TextFormField(
-                        onChanged: (vale) {
-                          L_passord = vale;
-                        },
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.vpn_key,
-                            color: Colors.orange,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(
-                                color: Colors.orangeAccent, width: 3),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              borderSide: BorderSide(
-                                  color: Colors.orangeAccent, width: 3)),
-                          labelStyle: TextStyle(color: Colors.deepOrange),
-                          filled: true,
-                          //fillColor: Colors.white70,
-                          labelText: 'Your Password',
-                        ),
-                        validator: (password) {
-                          if (password.isEmpty) {
-                            return ' Please Enter your Password';
-                          }
-                          return null;
-                        },
+                    child: Form(
+                      key: _KeyEmail,
+                      child: SizedBox(
+                        width: sizeW,
+                        child: forLogin(
+                            (value) {
+                              doctorLoginEmail = value;
+                            },
+                            'your Email Address',
+                            Icon(
+                              Icons.email,
+                              color: Colors.orange,
+                            ),
+                            TextInputType.emailAddress,
+                            false,
+                            (String email) {
+                              if (email.isEmpty) {
+                                return ' Please Enter your Email';
+                              }
+                              // else {
+                              //   var regExp = new RegExp(
+                              //       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*");
+                              //   if (regExp.hasMatch(email)) {
+                              //     return ' email is invalid';
+                              //   }
+                              // }
+                            }),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: FlatButton(
-                  color: Colors.orange,
-                  child: Text(
-                    'login',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                ],
+              ),
+              Row(
+                children: [
+                  Form(
+                    key: _KeyPassward,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        width: sizeW,
+                        child: forLogin(
+                            (value) {
+                              doctorLoginPassword = value;
+                            },
+                            'Your Password',
+                            Icon(
+                              Icons.vpn_key,
+                              color: Colors.orange,
+                            ),
+                            TextInputType.text,
+                            true,
+                            (String password) {
+                              if (password.isEmpty) {
+                                return ' Please Enter your Password';
+                              }
+                              if (password.length < 8) {
+                                return 'your Password is too week';
+                              }
+                              return null;
+                            }),
+                      ),
                     ),
                   ),
-                  onPressed: () async {
-                    // if (_formKey.currentState.validate()) {
-                    //   Scaffold.of(context).showSnackBar(
-                    //       SnackBar(content: Text('Processing Data')));
-                    // }
-                    try {
-                      final User = await _auth.signInWithEmailAndPassword(
-                          email: L_email, password: L_passord);
-
-                      if (User != null) {
-                        var Uid = getCurrentUserId();
-                        print(Uid);
-                        Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
-                        _controller.clear();
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: FlatButton(
+                    color: Colors.orange,
+                    child: Text(
+                      'login',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_KeyEmail.currentState.validate() &&
+                          _KeyPassward.currentState.validate()) {
+                        try {
+                          final User = await _auth.signInWithEmailAndPassword(
+                              email: doctorLoginEmail,
+                              password: doctorLoginPassword);
+                          if (User != null) {
+                            print(getCurrentUserId());
+                            Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
                       }
-                    } catch (e) {
-                      print(e);
-                    }
-                  }),
-            ),
-          ],
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );

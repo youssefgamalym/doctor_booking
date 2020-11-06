@@ -33,8 +33,8 @@ class _PatientEnterIdState extends State<PatientEnterId> {
                   'Wrong ID. Try again,\n or click "Call Doctor" ',
                   style: simpleNo_Style(),
                 ),
-                FlatButton.icon(
-                    onPressed: () {}, icon: Icon(Icons.call), label: Text(''))
+                // FlatButton.icon(
+                //     onPressed: () {}, icon: Icon(Icons.call), label: Text(''))
               ],
             ),
           ),
@@ -46,10 +46,13 @@ class _PatientEnterIdState extends State<PatientEnterId> {
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
+  final _keyDoctorID = GlobalKey<FormState>();
+  final _keyPatientNumber = GlobalKey<FormState>();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int patientNo = 2;
-  var doctorIdFromPatient;
+  String patientNo = '0';
+  String doctorIdFromPatient;
   final CollectionReference doctorProfileCollection =
       FirebaseFirestore.instance.collection('doctor profile');
 
@@ -57,9 +60,10 @@ class _PatientEnterIdState extends State<PatientEnterId> {
       FirebaseFirestore.instance.collection('patient');
   @override
   Widget build(BuildContext context) {
+    print('we are her...');
     return Scaffold(
       key: _scaffoldKey,
-      appBar: appBarMain(context, ''),
+      appBar: appBarMain(context, 'patient Conformation'),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,50 +83,73 @@ class _PatientEnterIdState extends State<PatientEnterId> {
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: forProfile((value) {
-                    doctorIdFromPatient = value;
-                  },
-                      'Doctor id',
-                      Icon(
-                        Icons.perm_identity,
-                        color: Colors.orange,
-                      ),
-                      TextInputType.phone),
-                ),
-              ],
+            child: Form(
+              key: _keyDoctorID,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: forProfile(
+                        (value) {
+                          print('we are her...');
+                          doctorIdFromPatient = value;
+                        },
+                        'Doctor id',
+                        Icon(
+                          Icons.perm_identity,
+                          color: Colors.orange,
+                        ),
+                        TextInputType.number,
+                        (String value) {
+                          if (value.isEmpty) {
+                            return 'Must Enter Doctor ID For Continue.';
+                          }
+                          if (value.length >= 4) {
+                            return 'Writes 4 or more Numbers';
+                          }
+                        }),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: forProfile((value) {
-                    patientNo = value;
-                  },
-                      'Enter your Number',
-                      Icon(
-                        Icons.confirmation_number,
-                        color: Colors.orange,
-                      ),
-                      TextInputType.phone),
-                ),
-              ],
+            child: Form(
+              key: _keyPatientNumber,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: forProfile(
+                        (value) {
+                          patientNo = value;
+                        },
+                        'Enter your Number',
+                        Icon(
+                          Icons.confirmation_number,
+                          color: Colors.orange,
+                        ),
+                        TextInputType.number,
+                        (value) {
+                          if (value.isEmpty) {
+                            return 'Enter your Number in Waiting List.';
+                          }
+                        }),
+                  ),
+                ],
+              ),
             ),
           ),
           RaisedButton(
             onPressed: () async {
+              _keyDoctorID.currentState.validate();
+              _keyDoctorID.currentState.validate();
               var forPatient = {
                 'patient number': patientNo,
               };
-
               try {
                 patientInformation
                     .doc(getCurrentUserId())
@@ -139,8 +166,7 @@ class _PatientEnterIdState extends State<PatientEnterId> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            PatientView(doctorId.toString())));
+                        builder: (context) => PatientView(doctorId)));
               } else
                 _showSnackBarWrongID();
             },

@@ -1,19 +1,20 @@
 import 'dart:ui';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-
-final CollectionReference doctor_profile_Collection =
-    FirebaseFirestore.instance.collection('doctor profile');
-
 getCurrentUserId() {
   final pid = _auth.currentUser.uid;
   return pid;
 }
 
+// forIfKeyValidate(String Key,){
+//   if (Key.currentState.validate()) {
+//     Scaffold.of(context).showSnackBar(
+//         SnackBar(content: Text('Processing Data')));
+//   }
+// }
+showSnackBar() {}
 TextStyle simpleTextStyle() {
   return TextStyle(
       color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold);

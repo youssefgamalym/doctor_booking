@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doctor_booking/main.dart';
 import 'package:doctor_booking/patient/patient%20enter%20id.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +26,20 @@ class _PatientSelectState extends State<PatientSelect> {
       appBar: appBarMain(context, 'Select your doctor'),
       body: Column(
         children: [
-          StreamBuilder(
+          StreamBuilder<QuerySnapshot>(
               stream: doctorProfileCollection.snapshots(),
-              builder: (context, snapShot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapShot) {
                 if (snapShot.data == null) return CircularProgressIndicator();
                 return Expanded(
                   child: ListView(
-                    children: snapShot.data.docs.map<Widget>((document) {
+                    children: snapShot.data.docs
+                        .map<Widget>((DocumentSnapshot document) {
+                      if (!document.data().containsKey('First Name') ||
+                          document.data()['First Name'] == null) {
+                        return Text('Error in First Name');
+                      }
+
                       String doctorName = document.data()['First Name'];
                       String doctorNameLast = document.data()['Last Name'];
                       String specialization = document.data()['Specialization'];
@@ -64,7 +72,7 @@ class _PatientSelectState extends State<PatientSelect> {
                                             doctorcode.toString(),
                                             doctorId.toString())));
                                 // Navigator.pushNamed(
-                                //     context, 'patient enter id');
+                                //     context, MyApp.PATENT_ENTER_ID);
                               },
                               trailing: Icon(Icons.person_search),
                               title: Text(

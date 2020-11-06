@@ -1,21 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-
 import 'methods.dart';
 
-Widget appBarMain(BuildContext context, String Title) {
+Widget appBarMain(BuildContext context, String mainTitle) {
   return AppBar(
-    title: Text(Title, style: styleForAppBar()),
+    title: Text(mainTitle, style: styleForAppBar()),
     centerTitle: true,
     backgroundColor: Colors.deepOrange,
   );
 }
 
-TextFormField forProfile(
-    var onChanged, String labeltext, Icon icon, TextInputType kind) {
+TextFormField forProfile(Function(String text) onChanged, String labelText,
+    Icon icon, TextInputType kind, Function validator) {
   return TextFormField(
     onChanged: onChanged,
     keyboardType: kind,
@@ -31,12 +28,54 @@ TextFormField forProfile(
         labelStyle: TextStyle(color: Colors.deepOrange),
         filled: true,
         //fillColor: Colors.white70,
-        labelText: labeltext),
+        labelText: labelText),
+    validator: validator,
+  );
+}
 
-    // validator: (String email) {
-    //   if (email.isEmpty) {
-    //     return ' Please Enter your Email';
-    //   }
-    // },
+TextFormField forNewAccount(var onChanged, String labelText, Icon icon,
+    TextInputType kind, bool obscure, var validator) {
+  return TextFormField(
+    onChanged: onChanged,
+    keyboardType: kind,
+    obscureText: obscure,
+    decoration: InputDecoration(
+        icon: icon,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(color: Colors.orangeAccent, width: 3),
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            borderSide: BorderSide(color: Colors.orangeAccent, width: 3)),
+        labelStyle: TextStyle(color: Colors.deepOrange),
+        filled: true,
+        //fillColor: Colors.white70,
+        labelText: labelText),
+    validator: validator,
+  );
+}
+
+TextFormField forLogin(var onChanged, String labelText, Icon icon,
+    TextInputType kind, bool obscure, var validator) {
+  return TextFormField(
+    onChanged: onChanged,
+    keyboardType: kind,
+    obscureText: obscure,
+    decoration: InputDecoration(
+      icon: icon,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        borderSide: BorderSide(color: Colors.orangeAccent, width: 3),
+      ),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(color: Colors.orangeAccent, width: 3)),
+      labelStyle: TextStyle(color: Colors.deepOrange),
+      filled: true,
+      //fillColor: Colors.white70,
+      labelText: labelText,
+    ),
+    validator: validator,
   );
 }

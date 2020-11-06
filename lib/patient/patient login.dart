@@ -11,140 +11,110 @@ class PatientLogin extends StatefulWidget {
   _PatientLoginState createState() => _PatientLoginState();
 }
 
-final _formKeyP = GlobalKey<FormState>();
+final _keyEmail = GlobalKey<FormState>();
+final _keyPassword = GlobalKey<FormState>();
+final GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
 
 class _PatientLoginState extends State<PatientLogin> {
-  String P_email, P_passord;
+  String patientLoginEmail, patientLoginPassword;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     var sizeW = MediaQuery.of(context).size.width / 1.2;
     return Scaffold(
       appBar: appBarMain(context, 'login'),
+      key: _keyScaffold,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SizedBox(
-                    width: sizeW,
-                    child: TextFormField(
-                      onChanged: (vale) {
-                        P_email = vale;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.email,
-                            color: Colors.orange,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(
-                                color: Colors.orangeAccent, width: 3),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              borderSide: BorderSide(
-                                  color: Colors.orangeAccent, width: 3)),
-                          labelStyle: TextStyle(color: Colors.deepOrange),
-                          filled: true,
-                          //fillColor: Colors.white70,
-                          labelText: 'your Email Address'),
-                      validator: (email) {
-                        if (email.isEmpty) {
-                          return ' Please Enter your Email';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Form(
-                  key: _formKeyP,
-                  child: Padding(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: SizedBox(
-                      width: sizeW,
-                      child: TextFormField(
-                        onChanged: (vale) {
-                          P_passord = vale;
-                        },
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.vpn_key,
-                            color: Colors.orange,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            borderSide: BorderSide(
-                                color: Colors.orangeAccent, width: 3),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                              borderSide: BorderSide(
-                                  color: Colors.orangeAccent, width: 3)),
-                          labelStyle: TextStyle(color: Colors.deepOrange),
-                          filled: true,
-                          //fillColor: Colors.white70,
-                          labelText: 'Your Password',
-                        ),
-                        validator: (password) {
-                          if (password.isEmpty) {
-                            return ' Please Enter your Password';
-                          }
-                          return null;
-                        },
+                    child: Form(
+                      key: _keyEmail,
+                      child: SizedBox(
+                        width: sizeW,
+                        child: forLogin(
+                            (value) {
+                              patientLoginEmail = value;
+                            },
+                            'Enter your Email',
+                            Icon(Icons.email, color: Colors.orange),
+                            TextInputType.emailAddress,
+                            false,
+                            (email) {
+                              if (email.isEmpty) {
+                                return ' Please Enter your Email';
+                              }
+                              return null;
+                            }),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: FlatButton(
-                  color: Colors.orange,
-                  child: Text(
-                    'login',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                ],
+              ),
+              Row(
+                children: [
+                  Form(
+                    key: _keyPassword,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        width: sizeW,
+                        child: forLogin(
+                            (value) {
+                              patientLoginPassword = value;
+                            },
+                            'Enter your Password',
+                            Icon(Icons.vpn_key, color: Colors.orange),
+                            TextInputType.text,
+                            true,
+                            (email) {
+                              if (email.isEmpty) {
+                                return ' Please Enter your Password';
+                              }
+                              return null;
+                            }),
+                      ),
                     ),
                   ),
-                  onPressed: () async {
-                    // if (_formKey.currentState.validate()) {
-                    //   Scaffold.of(context).showSnackBar(
-                    //       SnackBar(content: Text('Processing Data')));
-                    // }
-                    try {
-                      final User = await _auth.signInWithEmailAndPassword(
-                          email: P_email, password: P_passord);
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: FlatButton(
+                    color: Colors.orange,
+                    child: Text(
+                      'login',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_keyEmail.currentState.validate() &&
+                          _keyPassword.currentState.validate()) {
+                        try {
+                          final User = await _auth.signInWithEmailAndPassword(
+                              email: patientLoginEmail,
+                              password: patientLoginPassword);
 
-                      if (User != null) {
-                        var Pid = getCurrentUserId();
-                        print('from login(screen) $Pid');
-                        Navigator.pushNamed(context, MyApp.PATIENT_SELECT);
-                        //_controller.clear();
+                          if (User != null) {
+                            print('from login(screen) ${getCurrentUserId()}');
+                            Navigator.pushNamed(context, MyApp.PATIENT_SELECT);
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
                       }
-                    } catch (e) {
-                      print(e);
-                    }
-                  }),
-            ),
-          ],
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );

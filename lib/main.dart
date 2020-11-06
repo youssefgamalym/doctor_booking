@@ -7,9 +7,10 @@ import 'package:doctor_booking/patient/patient%20view.dart';
 import 'package:doctor_booking/test.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'dorctor/doctor information.dart';
 import 'dorctor/doctor login.dart';
-import 'dorctor/doctor new account.dart';
 import 'dorctor/doctor profile.dart';
+import 'dorctor/doctor update profile.dart';
 import 'dorctor/doctor view.dart';
 
 void main() {
@@ -27,26 +28,30 @@ class MyApp extends StatelessWidget {
   static const String PATENT_ENTER_ID = 'patient enter id';
   static const String PATENT_LOGIN = 'patient login';
   static const String PATENT_NEW_ACCOUNT = 'patient new account';
+  static const String DOCTOR_INFORMATION = 'doctor information';
+  static const String DOCTOR_UPDATE_PROFILE = 'doctor update profile';
+
   static const String TEST = 'test';
-  String x = 'k', y = 'j', z = 'l';
+  String x = 'k', y = 'j', z = 'l', m;
+
   @override
   Widget build(BuildContext context) {
     Firebase.initializeApp();
     return MaterialApp(
-      theme: ThemeData.dark(),
+      theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
       home: Home(),
       routes: {
         DOCTOR_LOGIN: ((context) => DoctorLogin()),
-        DOCTOR_NEW_ACCOUNT: ((context) => CareatNewAccount()),
         DOCTOR_PROFILE: ((context) => DoctorProfile()),
         DOCTOR_VIEW: ((context) => DoctorView()),
         PATIENT_SELECT: ((context) => PatientSelect()),
         PATENT_VIEW: ((context) => PatientView(y.toString())),
         PATENT_NEW_ACCOUNT: ((context) => PatientNewAccount()),
         PATENT_LOGIN: ((context) => PatientLogin()),
-        PATENT_ENTER_ID: ((context) =>
-            PatientEnterId(x.toString(), z.toString())),
+        PATENT_ENTER_ID: ((context) => PatientEnterId(x, z)),
+        DOCTOR_INFORMATION: ((context) => doctorInformations(m)),
+        DOCTOR_UPDATE_PROFILE: ((context) => DoctorUpdateProfile()),
         TEST: ((context) => Test()),
       },
     );
