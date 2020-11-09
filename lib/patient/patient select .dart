@@ -13,10 +13,8 @@ class PatientSelect extends StatefulWidget {
 }
 
 class _PatientSelectState extends State<PatientSelect> {
-  final CollectionReference patient_updates =
+  final CollectionReference patientUpdates =
       FirebaseFirestore.instance.collection('patient Updates');
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final CollectionReference doctorProfileCollection =
       FirebaseFirestore.instance.collection('doctor profile');
@@ -43,9 +41,9 @@ class _PatientSelectState extends State<PatientSelect> {
                       String doctorName = document.data()['First Name'];
                       String doctorNameLast = document.data()['Last Name'];
                       String specialization = document.data()['Specialization'];
-                      int doctorcode = document.data()['Doctor Id'];
+                      int doctorCode = document.data()['Doctor Id'];
                       print(
-                          "from patient select(screen)=> Doctor code: $doctorcode");
+                          "from patient select(screen)=> Doctor code: $doctorCode");
                       String doctorId = document.documentID;
                       print('from patient select(screen)=> Id: $doctorId');
                       return Padding(
@@ -63,16 +61,14 @@ class _PatientSelectState extends State<PatientSelect> {
                                 //     .data()['Doctor Id'];
                                 // int doctorcode = document.data()['Doctor Id'];
                                 print(
-                                    "from Patient select (screen) Doctor Id: $doctorcode");
+                                    "from Patient select (screen) Doctor Id: $doctorCode");
                                 print('from Patient select (screen) on tap');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => PatientEnterId(
-                                            doctorcode.toString(),
+                                        builder: (context) => patientEnterId(
+                                            doctorCode.toString(),
                                             doctorId.toString())));
-                                // Navigator.pushNamed(
-                                //     context, MyApp.PATENT_ENTER_ID);
                               },
                               trailing: Icon(Icons.person_search),
                               title: Text(

@@ -33,16 +33,33 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
     _scaffoldKeyForP.currentState.showSnackBar(snackbar);
   }
 
+  _showSnackBar(String e) {
+    var snackbar = SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            child: Text(
+              '$e',
+              style: simpleNo_Style(),
+            ),
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 4),
+      backgroundColor: Colors.deepOrange,
+    );
+    _scaffoldKeyForP.currentState.showSnackBar(snackbar);
+  }
+
   final _keyUserName = GlobalKey<FormState>();
   final _keyEmail = GlobalKey<FormState>();
-  final _keyPassward = GlobalKey<FormState>();
-  final _keyPasswardR = GlobalKey<FormState>();
+  final _keyPassword = GlobalKey<FormState>();
+  final _keyPasswordR = GlobalKey<FormState>();
 
   final GlobalKey<ScaffoldState> _scaffoldKeyForP = GlobalKey<ScaffoldState>();
   String createEmail, createPassword, createPasswordR, createName;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  static const String CREATE_EMAIL_PATIENT = '';
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +155,7 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: Form(
-                    key: _keyPassward,
+                    key: _keyPassword,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -171,7 +188,7 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: Form(
-                    key: _keyPasswardR,
+                    key: _keyPasswordR,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -202,7 +219,7 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 30, bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -210,36 +227,40 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
                         'Select Enter as Doctor or Patient : ',
                         style: simpleTextStyle(),
                       ),
-                      DropdownButton<String>(
-                        value: dropdownValue,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            dropdownValue = newValue;
-                          });
-                        },
-                        items: <String>['Doctor', 'Patient']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child:
-                                Text(value, style: simpleTextStyleDropdown()),
-                          );
-                        }).toList(),
-                      ),
                     ],
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DropdownButton<String>(
+                      value: dropdownValue,
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                        });
+                      },
+                      items: <String>['Doctor', 'Patient']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value, style: simpleTextStyleDropdown()),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 10),
                   child: RaisedButton(
                     onPressed: () async {
                       if (_keyUserName.currentState.validate() &&
                           _keyEmail.currentState.validate() &&
-                          _keyPassward.currentState.validate() &&
-                          _keyPasswardR.currentState.validate()) {
+                          _keyPassword.currentState.validate() &&
+                          _keyPasswordR.currentState.validate()) {
                         if (createPassword == createPasswordR) {
                           try {
-                            final User = await _auth
+                            await _auth
                                 .createUserWithEmailAndPassword(
                                     email: createEmail,
                                     password: createPassword)
@@ -249,16 +270,18 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
                               getCurrentUserId();
                               print(getCurrentUserId());
                               if (dropdownValue == 'Doctor') {
-                                Navigator.pushNamed(
+                                Navigator.pushReplacementNamed(
                                     context, MyApp.DOCTOR_PROFILE);
                                 //  _controller.clear();
                               } else {
-                                Navigator.pushNamed(
+                                Navigator.pushReplacementNamed(
                                     context, MyApp.PATIENT_SELECT);
                               }
                             });
                           } catch (e) {
                             print(e);
+                            getMessageFromErrorCode(e.code);
+                            _showSnackBar(e.code);
                           }
                         } else
                           _showSnackBarForP();
@@ -282,10 +305,5 @@ class _PatientNewAccountState extends State<PatientNewAccount> {
         ],
       ),
     );
-  }
-
-  void showSnackbar() {
-    _scaffoldKeyForP.currentState
-        .showSnackBar(SnackBar(content: Text('Processing Data')));
   }
 }

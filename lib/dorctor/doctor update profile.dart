@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +15,6 @@ final _keyFirsName = GlobalKey<FormState>();
 final _keyLastName = GlobalKey<FormState>();
 final _keyPhoneNumber = GlobalKey<FormState>();
 final _keyDoctorSpecialization = GlobalKey<FormState>();
-final _keyID = GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class _DoctorUpdateProfileState extends State<DoctorUpdateProfile> {
@@ -50,7 +48,7 @@ class _DoctorUpdateProfileState extends State<DoctorUpdateProfile> {
 
   String selectTimeValueForm = '';
   String selectTimeValueTo = '';
-  int sTVFH, sTVFM, sTVTH, sTVTM, doctorId;
+  int sTVFH, sTVFM, sTVTH, sTVTM;
 
   final CollectionReference doctorProfileCollection =
       FirebaseFirestore.instance.collection('doctor profile');
@@ -187,38 +185,6 @@ class _DoctorUpdateProfileState extends State<DoctorUpdateProfile> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, bottom: 20),
-                child: Row(
-                  children: [
-                    Form(
-                      key: _keyID,
-                      child: SizedBox(
-                        width: 300,
-                        child: forProfile(
-                            (value) {
-                              doctorId = int.parse(value);
-                              print('Doc ID: $doctorId');
-                            },
-                            'Enter ID ',
-                            Icon(
-                              Icons.perm_identity,
-                              color: Colors.orange,
-                            ),
-                            TextInputType.number,
-                            (String value) {
-                              if (value.isEmpty) {
-                                return 'Please Enter your ID ';
-                              }
-                              if (value.length >= 4) {
-                                return 'Use 4 or more Numbers';
-                              }
-                            }),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -276,18 +242,17 @@ class _DoctorUpdateProfileState extends State<DoctorUpdateProfile> {
                   ],
                 ),
               ),
-              RaisedButton(
-                onPressed: null,
-                color: Colors.orange,
-                child: Text('Add Location'),
-              ),
+              // RaisedButton(
+              //   onPressed: null,
+              //   color: Colors.orange,
+              //   child: Text('Add Location'),
+              // ),
               RaisedButton(
                 onPressed: () {
                   if (_keyFirsName.currentState.validate() &&
                       _keyLastName.currentState.validate() &&
                       _keyPhoneNumber.currentState.validate() &&
-                      _keyDoctorSpecialization.currentState.validate() &&
-                      _keyID.currentState.validate()) {
+                      _keyDoctorSpecialization.currentState.validate()) {
                     var profile = {
                       'First Name': firstName,
                       'Last Name': lastName,
@@ -297,18 +262,18 @@ class _DoctorUpdateProfileState extends State<DoctorUpdateProfile> {
                       'Time Start Minute ': sTVFM,
                       'Time End Hours': sTVTH,
                       'Time End Minute': sTVTM,
-                      'Doctor Id': doctorId,
                     };
                     doctorProfileCollection
                         .doc(getCurrentUserId())
-                        .set(profile)
+                        .update(profile)
                         .catchError((error) {
                       print("Error: $error");
                     });
                   }
+                  Navigator.pushReplacementNamed(context, MyApp.DOCTOR_VIEW);
                 },
                 color: Colors.orange,
-                child: Text('Save'),
+                child: Text('Save & back'),
               ),
             ],
           ),

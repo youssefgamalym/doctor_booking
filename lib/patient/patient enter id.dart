@@ -4,25 +4,26 @@ import 'package:doctor_booking/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../methods.dart';
 
-class PatientEnterId extends StatefulWidget {
+// ignore: must_be_immutable, camel_case_types
+class patientEnterId extends StatefulWidget {
   String doctorCode;
   String doctorId;
-  PatientEnterId(this.doctorCode, this.doctorId);
+  patientEnterId(this.doctorCode, this.doctorId);
   @override
-  _PatientEnterIdState createState() =>
-      _PatientEnterIdState(doctorCode, doctorId);
+  _patientEnterIdState createState() =>
+      _patientEnterIdState(doctorCode, doctorId);
 }
 
-class _PatientEnterIdState extends State<PatientEnterId> {
+// ignore: camel_case_types
+class _patientEnterIdState extends State<patientEnterId> {
   String doctorCode;
   String doctorId;
-  _PatientEnterIdState(this.doctorCode, this.doctorId);
+  _patientEnterIdState(this.doctorCode, this.doctorId);
 
   _showSnackBarWrongID() {
-    var snackbar = SnackBar(
+    var snackBar = SnackBar(
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -30,11 +31,9 @@ class _PatientEnterIdState extends State<PatientEnterId> {
             child: Row(
               children: [
                 Text(
-                  'Wrong ID. Try again,\n or click "Call Doctor" ',
+                  'Wrong ID. Try again.',
                   style: simpleNo_Style(),
                 ),
-                // FlatButton.icon(
-                //     onPressed: () {}, icon: Icon(Icons.call), label: Text(''))
               ],
             ),
           ),
@@ -43,7 +42,7 @@ class _PatientEnterIdState extends State<PatientEnterId> {
       duration: Duration(seconds: 4),
       backgroundColor: Colors.deepOrange,
     );
-    _scaffoldKey.currentState.showSnackBar(snackbar);
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   final _keyDoctorID = GlobalKey<FormState>();
@@ -60,7 +59,6 @@ class _PatientEnterIdState extends State<PatientEnterId> {
       FirebaseFirestore.instance.collection('patient');
   @override
   Widget build(BuildContext context) {
-    print('we are her...');
     return Scaffold(
       key: _scaffoldKey,
       appBar: appBarMain(context, 'patient Conformation'),
@@ -92,7 +90,6 @@ class _PatientEnterIdState extends State<PatientEnterId> {
                     width: 300,
                     child: forProfile(
                         (value) {
-                          print('we are her...');
                           doctorIdFromPatient = value;
                         },
                         'Doctor id',

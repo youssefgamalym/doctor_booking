@@ -11,6 +11,25 @@ class PatientLogin extends StatefulWidget {
   _PatientLoginState createState() => _PatientLoginState();
 }
 
+_showSnackBar(String e) {
+  var snackbar = SnackBar(
+    content: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          child: Text(
+            '$e',
+            style: simpleNo_Style(),
+          ),
+        ),
+      ],
+    ),
+    duration: Duration(seconds: 4),
+    backgroundColor: Colors.deepOrange,
+  );
+  _keyScaffold.currentState.showSnackBar(snackbar);
+}
+
 final _keyEmail = GlobalKey<FormState>();
 final _keyPassword = GlobalKey<FormState>();
 final GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
@@ -99,16 +118,20 @@ class _PatientLoginState extends State<PatientLogin> {
                       if (_keyEmail.currentState.validate() &&
                           _keyPassword.currentState.validate()) {
                         try {
+                          // ignore: non_constant_identifier_names
                           final User = await _auth.signInWithEmailAndPassword(
                               email: patientLoginEmail,
                               password: patientLoginPassword);
 
                           if (User != null) {
                             print('from login(screen) ${getCurrentUserId()}');
-                            Navigator.pushNamed(context, MyApp.PATIENT_SELECT);
+                            Navigator.pushReplacementNamed(
+                                context, MyApp.PATIENT_SELECT);
                           }
                         } catch (e) {
                           print(e);
+                          getMessageFromErrorCode(e.code);
+                          _showSnackBar(e.code);
                         }
                       }
                     }),

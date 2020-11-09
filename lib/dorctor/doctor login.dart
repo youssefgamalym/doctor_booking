@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../main.dart';
 import '../methods.dart';
@@ -13,17 +14,44 @@ class DoctorLogin extends StatefulWidget {
   _DoctorLoginState createState() => _DoctorLoginState();
 }
 
-final _KeyPassward = GlobalKey<FormState>();
+final CollectionReference doctorProfileCollection =
+    FirebaseFirestore.instance.collection('doctor profile');
+// ignore: non_constant_identifier_names
+final _KeyPassword = GlobalKey<FormState>();
+// ignore: non_constant_identifier_names
 final _KeyEmail = GlobalKey<FormState>();
 
 class _DoctorLoginState extends State<DoctorLogin> {
+  _showSnackBar(String e) {
+    var snackBar = SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            child: Text(
+              '$e',
+              style: simpleNo_Style(),
+            ),
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 4),
+      backgroundColor: Colors.deepOrange,
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   String doctorLoginEmail, doctorLoginPassword;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     var sizeW = MediaQuery.of(context).size.width / 1.2;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Sign in',
@@ -77,7 +105,7 @@ class _DoctorLoginState extends State<DoctorLogin> {
               Row(
                 children: [
                   Form(
-                    key: _KeyPassward,
+                    key: _KeyPassword,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: SizedBox(
@@ -120,17 +148,42 @@ class _DoctorLoginState extends State<DoctorLogin> {
                     ),
                     onPressed: () async {
                       if (_KeyEmail.currentState.validate() &&
-                          _KeyPassward.currentState.validate()) {
+                          _KeyPassword.currentState.validate()) {
                         try {
+                          // ignore: non_constant_identifier_names
                           final User = await _auth.signInWithEmailAndPassword(
                               email: doctorLoginEmail,
                               password: doctorLoginPassword);
                           if (User != null) {
                             print(getCurrentUserId());
-                            Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
+
+                            doctorProfileCollection
+                                .doc(getCurrentUserId())
+                                .get()
+                                .then((snapshot) {
+                              if (snapshot.data() == null ||
+                                  snapshot.data().isEmpty) {
+                                Navigator.pushReplacementNamed(
+                                    context, MyApp.HOME_PAGE);
+                                print('toast');
+                                Fluttertoast.showToast(
+                                    msg: "please login as patient",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.blueGrey,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              } else {
+                                Navigator.pushReplacementNamed(
+                                    context, MyApp.DOCTOR_VIEW);
+                              }
+                            });
                           }
                         } catch (e) {
-                          print(e);
+                          print('doctor login error ${e.code}');
+                          getMessageFromErrorCode(e.code);
+                          _showSnackBar(e.code);
                         }
                       }
                     }),

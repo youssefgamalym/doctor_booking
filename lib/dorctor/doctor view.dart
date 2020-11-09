@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_booking/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../home.dart';
 import '../methods.dart';
 import '../widgets.dart';
 
@@ -17,10 +19,10 @@ class _DoctorViewState extends State<DoctorView> {
   int pending = 0;
   String dropdownValue = 'Offline';
 
-  final CollectionReference patient_updates =
+  final CollectionReference patientUpdates =
       FirebaseFirestore.instance.collection('patient Updates');
 
-  IncreaseCurrentPatientNocurrentPatientNo() {
+  increaseCurrentPatientNo() {
     setState(() {
       currentPatientNo++;
     });
@@ -32,7 +34,7 @@ class _DoctorViewState extends State<DoctorView> {
     });
   }
 
-  IncreasePending() {
+  increasePending() {
     setState(() {
       pending++;
     });
@@ -45,7 +47,7 @@ class _DoctorViewState extends State<DoctorView> {
   }
 
   _showSnackBar() {
-    var snackbar = SnackBar(
+    var snackBar = SnackBar(
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -60,7 +62,7 @@ class _DoctorViewState extends State<DoctorView> {
       duration: Duration(seconds: 4),
       backgroundColor: Colors.deepOrange,
     );
-    _scaffoldKey.currentState.showSnackBar(snackbar);
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -101,8 +103,37 @@ class _DoctorViewState extends State<DoctorView> {
                           style: simpleTextStyle(),
                         ),
                         onTap: () {
-                          // Navigator.pushNamed(
-                          //     context, MyApp.DOCTOR_UPDATE_PROFILE);
+                          Navigator.pushNamed(
+                              context, MyApp.DOCTOR_UPDATE_PROFILE);
+                        },
+                      ),
+                      // ListTile(
+                      //   leading: Icon(
+                      //     Icons.settings,
+                      //     color: Colors.orange,
+                      //   ),
+                      //   title: Text(
+                      //     'Settings',
+                      //     style: simpleTextStyle(),
+                      //   ),
+                      //   onTap: () {
+                      //     Navigator.pushNamed(context, MyApp.DOCTOR_SETTINGS);
+                      //   },
+                      // ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.exit_to_app,
+                          color: Colors.orange,
+                        ),
+                        title: Text(
+                          'LogOut',
+                          style: simpleTextStyle(),
+                        ),
+                        onTap: () async {
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Home()));
+                          //  Navigator.pushNamed(context, MyApp.DOCTOR_INFORMATION);
                         },
                       ),
                     ],
@@ -171,7 +202,7 @@ class _DoctorViewState extends State<DoctorView> {
                           ),
                           FlatButton(
                             onPressed: () {
-                              IncreaseCurrentPatientNocurrentPatientNo();
+                              increaseCurrentPatientNo();
                             },
                             child: Image(
                               image: AssetImage('Images/icons/right_arrow.png'),
@@ -234,7 +265,7 @@ class _DoctorViewState extends State<DoctorView> {
                           ),
                           FlatButton(
                             onPressed: () {
-                              IncreasePending();
+                              increasePending();
                             },
                             child: Image(
                               image: AssetImage('Images/icons/right_arrow.png'),
@@ -287,7 +318,7 @@ class _DoctorViewState extends State<DoctorView> {
                               };
                               _showSnackBar();
                               try {
-                                patient_updates
+                                patientUpdates
                                     .doc(getCurrentUserId())
                                     .set(patientMap)
                                     .catchError((error) {
@@ -296,9 +327,7 @@ class _DoctorViewState extends State<DoctorView> {
                               } catch (e) {
                                 print(e);
                               }
-                            }
-                            //  Navigator.pushNamed(context, 'doctor view');
-                            ),
+                            }),
                       )
                     ],
                   )

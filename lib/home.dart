@@ -21,11 +21,6 @@ class _HomeState extends State<Home> {
         child: Container(
           width: double.infinity,
           height: MediaQuery.of(context).size.height,
-          // MediaQuery.of(context).size.height
-          // decoration: BoxDecoration(
-          //     image: DecorationImage(
-          //         image: AssetImage('Images/therapy_jobs.png'),
-          //         fit: BoxFit.cover)),
           child: Column(
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: [

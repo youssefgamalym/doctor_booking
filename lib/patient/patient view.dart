@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor_booking/dorctor/doctor%20information.dart';
 import 'package:doctor_booking/dorctor/doctor%20view.dart';
-import 'package:doctor_booking/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../home.dart';
 import '../methods.dart';
 import '../widgets.dart';
 
+// ignore: must_be_immutable
 class PatientView extends StatefulWidget {
   String doctorId;
   PatientView(this.doctorId);
@@ -54,67 +57,6 @@ class _PatientViewState extends State<PatientView> {
                 child: Center(
                   child: Column(
                     children: [
-                      // StreamBuilder(
-                      //     stream: doctorProfileCollection
-                      //         .doc(doctorId.toString())
-                      //         .snapshots(),
-                      //     builder: (context, snapshot) {
-                      //       if (snapshot.data != null) {
-                      //         Map<String, dynamic> data = snapshot.data.data();
-                      //         print("PatientView: $data");
-                      //         return Column(children: [
-                      //           Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 20, bottom: 10, left: 10),
-                      //             child: Row(
-                      //               children: [
-                      //                 Text(
-                      //                   'Doctor Name\'s : \n       ${data['First Name']} ${data['Last Name']}',
-                      //                   style: simpleTextStyle(),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ),
-                      //           Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 20, bottom: 10, left: 10),
-                      //             child: Row(
-                      //               children: [
-                      //                 Text(
-                      //                   'Specialization Name\'s : \n      ${data['Specialization']}',
-                      //                   style: simpleTextStyle(),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ),
-                      //           Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 20, bottom: 10, left: 10),
-                      //             child: Row(
-                      //               children: [
-                      //                 Text(
-                      //                   'Phone Number :  \n      ${data['Phone Number']}',
-                      //                   style: simpleTextStyle(),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ),
-                      //           Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 30, bottom: 10, left: 10),
-                      //             child: Row(
-                      //               children: [
-                      //                 Text(
-                      //                   'Phone Number : ${data['Phone Number']}',
-                      //                   style: simpleTextStyle(),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ]);
-                      //       }
-                      //       return CircularProgressIndicator();
-                      //     }),
                       ListTile(
                         leading: Icon(
                           Icons.info_outline,
@@ -130,6 +72,45 @@ class _PatientViewState extends State<PatientView> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       doctorInformations(doctorId.toString())));
+                        },
+                      ),
+                      StreamBuilder(
+                          stream: doctorProfileCollection
+                              .doc(doctorId.toString())
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.data != null) {
+                              Map<String, dynamic> data = snapshot.data.data();
+                              return ListTile(
+                                leading: Icon(
+                                  Icons.call,
+                                  color: Colors.orange,
+                                ),
+                                title: Text(
+                                  'Call Doctor',
+                                  style: simpleTextStyle(),
+                                ),
+                                onTap: () {
+                                  launch("tel://${data['Phone Number']}");
+                                },
+                              );
+                              // ];
+                            }
+                            return Center(child: CircularProgressIndicator());
+                          }),
+                      ListTile(
+                        leading: Icon(
+                          Icons.exit_to_app,
+                          color: Colors.orange,
+                        ),
+                        title: Text(
+                          'LogOut',
+                          style: simpleTextStyle(),
+                        ),
+                        onTap: () async {
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Home()));
                           //  Navigator.pushNamed(context, MyApp.DOCTOR_INFORMATION);
                         },
                       ),
@@ -151,7 +132,6 @@ class _PatientViewState extends State<PatientView> {
                   builder: (context, snapshot) {
                     if (snapshot.data != null) {
                       Map<String, dynamic> data = snapshot.data.data();
-                      // String currentPatientNo = data[DoctorView.CURRENT_PATIENT_NO];
                       return Column(children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -193,10 +173,7 @@ class _PatientViewState extends State<PatientView> {
                   stream: patientUpdates.doc(doctorId.toString()).snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.data != null) {
-                      print('her1');
                       Map<String, dynamic> data = snapshot.data.data();
-                      print('her2');
-                      // String currentPatientNo = data[DoctorView.CURRENT_PATIENT_NO];
                       return Column(children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -267,7 +244,6 @@ class _PatientViewState extends State<PatientView> {
                           children: [
                             Text(
                               'Status : ${data['dropdownValue']} ',
-                              // currentPatientNo,
                               style: simpleTextStyle(),
                             ),
                           ],

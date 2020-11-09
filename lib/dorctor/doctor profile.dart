@@ -188,33 +188,52 @@ class _DoctorProfileState extends State<DoctorProfile> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, bottom: 20),
-                child: Row(
+                child: Column(
                   children: [
-                    Form(
-                      key: _keyID,
-                      child: SizedBox(
-                        width: 300,
-                        child: forProfile(
-                            (value) {
-                              doctorId = int.parse(value);
-                              print('Doc ID: $doctorId');
-                            },
-                            'Enter ID ',
-                            Icon(
-                              Icons.perm_identity,
-                              color: Colors.orange,
-                            ),
-                            TextInputType.number,
-                            (String value) {
-                              if (value.isEmpty) {
-                                return 'Please Enter your ID ';
-                              }
-                              // if (value.length <= 4) {
-                              //   return 'Use 4 or more Numbers';
-                              // }
-                            }),
-                      ),
+                    Row(
+                      children: [
+                        Form(
+                          key: _keyID,
+                          child: SizedBox(
+                            width: 300,
+                            child: forProfile(
+                                (value) {
+                                  doctorId = int.parse(value);
+                                  print('Doc ID: $doctorId');
+                                },
+                                'Enter ID ',
+                                Icon(
+                                  Icons.perm_identity,
+                                  color: Colors.orange,
+                                ),
+                                TextInputType.number,
+                                (String value) {
+                                  if (value.isEmpty) {
+                                    return 'Please Enter your Code ';
+                                  }
+                                  // if (value.length <= 4) {
+                                  //   return 'Use 4 or more Numbers';
+                                  // }
+                                }),
+                          ),
+                        ),
+                      ],
                     ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(
+                            'Note : Code Will not Change ',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline),
+                          ),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -306,13 +325,17 @@ class _DoctorProfileState extends State<DoctorProfile> {
                       print("Error: $error");
                     });
                     if (User != null) {
-                      Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
+                      Navigator.pushReplacementNamed(
+                          context, MyApp.DOCTOR_VIEW);
                     }
-                    Navigator.pushNamed(context, MyApp.DOCTOR_VIEW);
+                    Navigator.pushReplacementNamed(context, MyApp.DOCTOR_VIEW);
                   }
                 },
                 color: Colors.orange,
-                child: Text('continue'),
+                child: Text(
+                  'continue',
+                  style: simpleNo_Style(),
+                ),
               ),
             ],
           ),

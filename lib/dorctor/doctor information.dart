@@ -13,6 +13,7 @@ class doctorInformations extends StatefulWidget {
   _doctorInformationsState createState() => _doctorInformationsState(doctorId);
 }
 
+// ignore: camel_case_types
 class _doctorInformationsState extends State<doctorInformations> {
   final CollectionReference doctorProfileCollection =
       FirebaseFirestore.instance.collection('doctor profile');
